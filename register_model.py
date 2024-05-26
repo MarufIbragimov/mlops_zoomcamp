@@ -9,7 +9,7 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_squared_error
 
 HPO_EXPERIMENT_NAME = "random-forest-hyperopt_2"
-EXPERIMENT_NAME = "random-forest-best-models"
+EXPERIMENT_NAME = "random-forest-best-models_2"
 RF_PARAMS = ['max_depth', 'n_estimators', 'min_samples_split', 'min_samples_leaf', 'random_state']
 
 mlflow.set_tracking_uri("http://127.0.0.1:5000")
@@ -66,7 +66,7 @@ def run_register_model(data_path: str, top_n: int):
         order_by=["metrics.rmse ASC"]
     )
     for run in runs:
-        train_and_log_model(data_path=data_path, params=run.data.params)
+        train_and_log_model(data_path=data_path, params=eval(run.data.params['params']))
 
     # Select the model with the lowest test RMSE
     experiment = client.get_experiment_by_name(EXPERIMENT_NAME)
@@ -78,7 +78,7 @@ def run_register_model(data_path: str, top_n: int):
     )[0]
 
     # Register the best model
-    mlflow.register_model(model_uri=best_run.info.run_id, name='green_taxi_regressor')
+    mlflow.register_model(model_uri=best_run.info.run_id, name='green_taxi_regressor_2')
 
 
 if __name__ == '__main__':
